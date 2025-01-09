@@ -1,11 +1,10 @@
 import { body, validationResult } from 'express-validator';
 import axios from 'axios';
 import nodemailer from 'nodemailer';
-import Newsletter from '../models/Newsletter.js'; // Assuming you have this model
+import Newsletter from '../models/Newsletter.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Create a nodemailer transporter
 const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE,
   host: process.env.HOST_SERVICE,
@@ -17,7 +16,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Contact Form Submission Route
 export const contactForm = [
   body('name').notEmpty().withMessage('Name is required'),
   body('email').isEmail().withMessage('Please provide a valid email'),
@@ -31,14 +29,12 @@ export const contactForm = [
     }
 
     const { name, email, phone, service, message, 'g-recaptcha-response': recaptchaToken } = req.body;
-
-    // Check if reCAPTCHA token is provided
     if (!recaptchaToken) {
       return res.status(400).json({ success: false, message: 'reCAPTCHA token is missing.' });
     }
 
     try {
-      // Verify the reCAPTCHA token with Google
+      // reCAPTCHA token 
       const recaptchaResponse = await axios.post('https://www.google.com/recaptcha/api/siteverify', null, {
         params: {
           secret: process.env.RECAPTCHA_SECRET_KEY,
@@ -58,7 +54,7 @@ export const contactForm = [
         replyTo: email,
       };
 
-      // Mail options for acknowledgment to user
+      // Mail options for acknowledgment
       const acknowledgmentMailOptions = {
         from: process.env.HOST_EMAIL,
         to: email,
