@@ -67,7 +67,7 @@ router.get('/contact', (req, res) => {
 router.get('/admin', (req, res) => {
       const { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM } = getAdminDetails();
     res.render('partials/passwordPrompt', { 
-        title: 'Admin'.
+        title: 'Admin',
         adminEmail: BUILDEX_ADMIN_EMAIL,
         adminPhone: BUILDEX_ADMIN_PHONE,
         adminInstagram: BUILDEX_ADMIN_INSTAGRAM
