@@ -2,8 +2,8 @@ import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import { fileURLToPath } from 'url'; 
-import expressHandlebars from 'express-handlebars'; 
+import { fileURLToPath } from 'url';
+import expressHandlebars from 'express-handlebars';
 import rateLimit from 'express-rate-limit';
 import compression from 'compression';
 import helmet from 'helmet';
@@ -16,6 +16,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// **Trust proxy for Heroku**
+app.set('trust proxy', 1); 
 
 // Views directory
 const viewsDir = path.join(__dirname, 'views');
@@ -39,21 +42,22 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 // Middleware setup
-app.use(compression()); //faster response times
+app.use(compression()); // Faster response times
 app.use(helmet({
-  contentSecurityPolicy: false,  // allow inline scripts/styles
-  crossOriginEmbedderPolicy: false, // loading external resources
-  frameguard: { action: 'deny' }, // clickjacking
+  contentSecurityPolicy: false,  // Allow inline scripts/styles
+  crossOriginEmbedderPolicy: false, // Loading external resources
+  frameguard: { action: 'deny' }, // Clickjacking
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Set up rate limiting to prevent abuse
+// Set up rate limiting 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,  // 100 requests per window
+  max: 100,  // 100 requests 
 });
+
 app.use(limiter);
 
 // Session management
@@ -70,7 +74,7 @@ app.use(session({
 // Routes
 app.use('/', indexRoute);
 
-// Error handling  404
+// Error 404
 app.use((req, res, next) => {
   res.status(404).render('error', { 
     title: 'Page Not Found', 
@@ -78,7 +82,7 @@ app.use((req, res, next) => {
   });
 });
 
-// General error 
+// General error
 app.use((err, req, res, next) => {
   res.status(err.status || 500).render('error', { 
     title: 'Error', 
@@ -86,6 +90,7 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Catch-all error 
 app.use((err, req, res, next) => {
   res.status(err.status || 500).send(err.message || 'Internal Server Error');
 });
