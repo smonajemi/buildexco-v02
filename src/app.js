@@ -1,7 +1,6 @@
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
-import createError from 'http-errors';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url'; 
 import expressHandlebars from 'express-handlebars'; 
@@ -68,11 +67,10 @@ app.use(session({
   },
 }));
 
-
 // Routes
 app.use('/', indexRoute);
 
-// Error handling (404 and general errors)
+// Error handling  404
 app.use((req, res, next) => {
   res.status(404).render('error', { 
     title: 'Page Not Found', 
@@ -80,7 +78,7 @@ app.use((req, res, next) => {
   });
 });
 
-// General error handling middleware
+// General error 
 app.use((err, req, res, next) => {
   res.status(err.status || 500).render('error', { 
     title: 'Error', 

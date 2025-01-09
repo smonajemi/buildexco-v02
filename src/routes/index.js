@@ -1,66 +1,82 @@
 import express from 'express';
-import { contactForm, newsletterSubscription, subscribersData } from '../controllers/homeController.js';
 import dotenv from 'dotenv';
-import validateEmailAndPassword from '../middlewares/validationMiddleware.js'
+import { contactForm, newsletterSubscription } from '../controllers/homeController.js';
 
-const router = express.Router();
 dotenv.config();
 
+const router = express.Router();
 
-// GET
-router.get('/', (req, res, next) => {
-    const { BUILDEX_ADMIN_EMAIL: adminEmail, BUILDEX_ADMIN_PHONE: adminPhone, BUILDEX_ADMIN_INSTAGRAM: adminInstagram } = process.env;
-    res.status(200).render('index', { title: 'Buildex Construction', isHome: true, adminEmail, adminPhone, adminInstagram })
+// Helper function 
+const getAdminDetails = () => {
+    const { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM } = process.env;
+    return { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM };
+};
+
+// GET Routes
+
+// Home route
+router.get('/', (req, res) => {
+    const { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM } = getAdminDetails();
+    res.status(200).render('index', { 
+        title: 'Buildex Construction', 
+        isHome: true, 
+        adminEmail: BUILDEX_ADMIN_EMAIL, 
+        adminPhone: BUILDEX_ADMIN_PHONE, 
+        adminInstagram: BUILDEX_ADMIN_INSTAGRAM 
+    });
 });
 
-router.get('/projects', (req, res, next) => {
+// Projects page route
+router.get('/projects', (req, res) => {
     const services = Array.from({ length: 29 }, (_, i) => ({
-        imageUrl: `img/prevWorks/p${i + 1}.jpeg`,
+        imageUrl: `img/prevWorks/p${i + 1}.jpeg`
     }));
-
-    const { BUILDEX_ADMIN_EMAIL: adminEmail, BUILDEX_ADMIN_PHONE: adminPhone, BUILDEX_ADMIN_INSTAGRAM: adminInstagram } = process.env;
+    const { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM } = getAdminDetails();
     res.status(200).render('partials/projects', {
         title: 'Buildex Construction',
-        adminEmail,
-        adminPhone,
-        adminInstagram,
+        adminEmail: BUILDEX_ADMIN_EMAIL,
+        adminPhone: BUILDEX_ADMIN_PHONE,
+        adminInstagram: BUILDEX_ADMIN_INSTAGRAM,
         services
     });
 });
 
-router.get('/error', (req, res, next) => {
-    const { BUILDEX_ADMIN_EMAIL: adminEmail, BUILDEX_ADMIN_PHONE: adminPhone, BUILDEX_ADMIN_INSTAGRAM: adminInstagram } = process.env;
-    res.status(200).render('error', { title: 'Buildex Construction', adminEmail, adminPhone, adminInstagram })
+// Error page route
+router.get('/error', (req, res) => {
+    const { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM } = getAdminDetails();
+    res.status(200).render('error', {
+        title: 'Buildex Construction',
+        adminEmail: BUILDEX_ADMIN_EMAIL,
+        adminPhone: BUILDEX_ADMIN_PHONE,
+        adminInstagram: BUILDEX_ADMIN_INSTAGRAM
+    });
 });
 
-router.get('/contact', (req, res, next) => {
-    const { BUILDEX_ADMIN_EMAIL: adminEmail, BUILDEX_ADMIN_PHONE: adminPhone, BUILDEX_ADMIN_INSTAGRAM: adminInstagram } = process.env;
-    res.status(200).render('contact', { title: 'Buildex Construction', adminEmail, adminPhone, adminInstagram })
+// Contact page route
+router.get('/contact', (req, res) => {
+    const { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM } = getAdminDetails();
+    res.status(200).render('contact', {
+        title: 'Buildex Construction',
+        adminEmail: BUILDEX_ADMIN_EMAIL,
+        adminPhone: BUILDEX_ADMIN_PHONE,
+        adminInstagram: BUILDEX_ADMIN_INSTAGRAM
+    });
 });
 
-router.get('/subscribers', (req, res, next) => {
-    res.render('partials/passwordPrompt', {
-        title: 'Admin',
-    })
+// Subscribers route (Admin page)
+router.get('/admin', (req, res) => {
+    res.render('partials/passwordPrompt', { title: 'Admin' });
 });
 
-// POST
+// POST Routes
+
+// Contact form submission
 router.post('/contact', contactForm);
 
+// Newsletter subscription
 router.post('/newsletter', newsletterSubscription);
 
-
-router.post('/send-subscribers', validateEmailAndPassword, (req, res) => {
-    const errors = validationResult(req);  // Check for validation errors
-
-  if (!errors.isEmpty()) {
-    // If validation errors exist, render the form with the error messages
-    return res.render('partials/passwordPrompt', {
-      errors: errors.array(),
-      recipientEmail: req.body.recipientEmail,  
-    });
-  }
-  res.send('Success!');
-});
+// Subscribers data submission 
+router.post('/send-subscribers', );
 
 export default router;
