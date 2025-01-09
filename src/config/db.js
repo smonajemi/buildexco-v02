@@ -26,7 +26,7 @@ const connectDB = async () => {
   }
 };
 
-// handle connection events
+// connection events
 mongoose.connection.on('connected', () => {
   console.log('Mongoose successfully connected!');
 });
