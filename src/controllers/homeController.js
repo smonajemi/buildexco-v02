@@ -77,7 +77,6 @@ export const contactForm = [
 // Newsletter Subscription Route
 export const newsletterSubscription = [
   body('email').isEmail().withMessage('Please provide a valid email address'),
-
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -100,8 +99,7 @@ export const newsletterSubscription = [
       // Send notification email to admin
       const mailOptions = {
         from: process.env.HOST_EMAIL,
-        // to: process.env.HOST_EMAIL,
-        to: 'sina.monajemi@me.com',
+        to: process.env.HOST_EMAIL,
         subject: 'New Newsletter Subscription',
         text: `A new email has subscribed: ${email}`,
       };
