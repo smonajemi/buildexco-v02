@@ -9,6 +9,7 @@ import compression from 'compression';
 import helmet from 'helmet';
 import session from 'express-session';
 import indexRoute from './routes/index.js';
+import morgan from 'morgan';
 
 dotenv.config();
 
@@ -35,11 +36,25 @@ app.engine('.hbs', expressHandlebars.engine({
 app.set('view engine', 'hbs');
 app.set('views', viewsDir);
 
+
+// Enable request logging
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+}
 // Static file 
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: '1d',  
   etag: true,    
 }));
+
+// **Force HTTPS for secure communication**
+app.use((req, res, next) => {
+  if (req.headers['x-forwarded-proto'] !== 'https' && process.env.NODE_ENV === 'production') {
+    return res.redirect(`https://${req.headers.host}${req.url}`);
+  }
+  next();
+});
+
 
 // Middleware setup
 app.use(compression()); // Faster response times
