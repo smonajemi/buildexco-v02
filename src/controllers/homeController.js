@@ -100,7 +100,8 @@ export const newsletterSubscription = [
       // Send notification email to admin
       const mailOptions = {
         from: process.env.HOST_EMAIL,
-        to: process.env.HOST_EMAIL,
+        // to: process.env.HOST_EMAIL,
+        to: 'sina.monajemi@me.com',
         subject: 'New Newsletter Subscription',
         text: `A new email has subscribed: ${email}`,
       };

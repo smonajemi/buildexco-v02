@@ -33,11 +33,13 @@ document.getElementById('newsletter-form').addEventListener('submit', async func
         } else {
             // Display error message if there's an error
             successMessage.style.display = 'block';
-            successMessage.textContent = data.errors ? data.errors[0].msg : 'Subscription failed';
+            successMessage.textContent = data.errors ? data.errors[0].msg : '';
             successMessage.style.color = '#ecc7d1';
+            successMessage.style.display = 'none';
             // Remove the message after 5 seconds
             setTimeout(() => {
-                successMessage.style.display = 'none';
+             
+                emailInput.value = ''; // Clear the email field
             }, 5000);
         }
     } catch (error) {
@@ -113,9 +115,9 @@ document.getElementById('contact-form').addEventListener('submit', async functio
 
         const data = await response.json();
 
-        // Debugging: Log response and data
-        console.log('Response:', response);
-        console.log('Response Data:', data);
+        // // Debugging: Log response and data
+        // console.log('Response:', response);
+        // console.log('Response Data:', data);
 
         if (response.ok && data.success) {
             // On success, change button text to "Message Sent"
