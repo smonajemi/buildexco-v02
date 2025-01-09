@@ -38,9 +38,9 @@ app.set('views', viewsDir);
 
 
 // Enable request logging
-if (process.env.NODE_ENV !== 'test') {
-  app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
-}
+// if (process.env.NODE_ENV !== 'test') {
+//   app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+// }
 // Static file 
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: '1d',  
