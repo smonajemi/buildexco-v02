@@ -1,11 +1,7 @@
 import express from 'express';
 import { contactForm, newsletterSubscription, subscribersData } from '../controllers/homeController.js';
 import dotenv from 'dotenv';
-import path from 'path';
-import fs from 'fs';
-import Newsletter from '../models/Newsletter.js'
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import validateEmailAndPassword from '../middlewares/validationMiddleware.js'
 
 const router = express.Router();
 dotenv.config();
@@ -42,24 +38,29 @@ router.get('/contact', (req, res, next) => {
     res.status(200).render('contact', { title: 'Buildex Construction', adminEmail, adminPhone, adminInstagram })
 });
 
+router.get('/subscribers', (req, res, next) => {
+    res.render('partials/passwordPrompt', {
+        title: 'Admin',
+    })
+});
 
-// Ensure the folder exists
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const subscribersDir = join(__dirname, '..', 'subscribers');
-
-const ensureDirectoryExists = (dirPath) => {
-  if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath, { recursive: true });
-  }
-};
-
-router.get('/subscribers', subscribersData);
 // POST
 router.post('/contact', contactForm);
 
 router.post('/newsletter', newsletterSubscription);
 
 
+router.post('/send-subscribers', validateEmailAndPassword, (req, res) => {
+    const errors = validationResult(req);  // Check for validation errors
+
+  if (!errors.isEmpty()) {
+    // If validation errors exist, render the form with the error messages
+    return res.render('partials/passwordPrompt', {
+      errors: errors.array(),
+      recipientEmail: req.body.recipientEmail,  
+    });
+  }
+  res.send('Success!');
+});
 
 export default router;

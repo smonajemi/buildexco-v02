@@ -116,24 +116,33 @@ export const newsletterSubscription = [
 ];
 
 export const subscribersData = async (req, res) => {
-    try {
-      const subscribers = await Newsletter.find();
-      const currentDate = new Date().toISOString().split('T')[0];
-      const subscribersJson = JSON.stringify(subscribers, null, 2);
+  try {
+    const subscribers = await Newsletter.find();
+    const currentDate = new Date().toISOString().split('T')[0];
+    const subscribersJson = JSON.stringify(subscribers, null, 2);
+    const numberOfSubscribers = subscribers.length;
+
+    const jsonAttachment = {
+      filename: `${numberOfSubscribers} of subscribers_${currentDate}.json`,
+      content: subscribersJson,
+      encoding: 'utf-8',
+    };
   
-      const mailOptions = {
-        from: process.env.HOST_EMAIL,
-        to: 'sina.monajemi@me.com', // Recipient email
-        subject: `Subscribers List for ${currentDate}`,
-        text: `Here is the list of subscribers as of ${currentDate}: \n\n${subscribersJson}`,
-      };
+    const mailOptions = {
+      from: process.env.HOST_EMAIL,
+      to: req.body.recipientEmail,
+      subject: `Subscribers List for ${currentDate}`,
+      text: `Here is the list of subscribers as of ${currentDate}:`,
+      attachments: [jsonAttachment],
+    };
   
-      // Send the email
-      await transporter.sendMail(mailOptions);
+    // Send the email
+    await transporter.sendMail(mailOptions);
   
-      return res.status(200).json({ success: true, message: `Subscribers sent to your email.` });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ success: false, message: 'An error occurred while fetching subscribers.' });
-    }
+    return res.status(200).json({ success: true, message: `Subscribers sent to your email.` });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Could not send!' });
+  }
+  
   };

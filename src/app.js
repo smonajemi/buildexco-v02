@@ -74,7 +74,18 @@ app.use('/', indexRoute);
 
 // Error handling (404 and general errors)
 app.use((req, res, next) => {
-  next(createError(404, 'Page Not Found'));
+  res.status(404).render('error', { 
+    title: 'Page Not Found', 
+    message: 'Sorry, the page you are looking for does not exist.' 
+  });
+});
+
+// General error handling middleware
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).render('error', { 
+    title: 'Error', 
+    message: err.message || 'Internal Server Error' 
+  });
 });
 
 app.use((err, req, res, next) => {
