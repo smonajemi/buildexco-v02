@@ -2,6 +2,8 @@ import { body, validationResult } from 'express-validator';
 import axios from 'axios';
 import nodemailer from 'nodemailer';
 import Newsletter from '../models/Newsletter.js'; // Assuming you have this model
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Create a nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -50,8 +52,7 @@ export const contactForm = [
       // Mail options for admin
       const mailOptions = {
         from: process.env.HOST_EMAIL,
-        // to: process.env.HOST_EMAIL,
-        to: 'sina.monajemi@me.com',
+        to: process.env.HOST_EMAIL,
         subject: 'Contact Form Submission',
         text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nService: ${service}\nMessage: ${message}`,
         replyTo: email,
