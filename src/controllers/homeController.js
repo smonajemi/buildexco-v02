@@ -16,9 +16,7 @@ const contactForm = [
     if (!recaptchaToken) {
       return res.status(400).json({ success: false, message: 'reCAPTCHA token is missing.' });
     }
-
     try {
-      // reCAPTCHA verification
       const recaptchaResponse = await axios.post('https://www.google.com/recaptcha/api/siteverify', null, {
         params: {
           secret: process.env.RECAPTCHA_SECRET_KEY,

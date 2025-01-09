@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { contactForm, newsletterSubscription } from '../controllers/homeController.js';
+import { contactForm, newsletterSubscription, subscribersData} from '../controllers/homeController.js';
 
 dotenv.config();
 
@@ -77,6 +77,6 @@ router.post('/contact', contactForm);
 router.post('/newsletter', newsletterSubscription);
 
 // Subscribers data submission 
-router.post('/send-subscribers', );
+router.post('/send-subscribers', subscribersData);
 
 export default router;
