@@ -65,7 +65,13 @@ router.get('/contact', (req, res) => {
 
 // Subscribers route (Admin page)
 router.get('/admin', (req, res) => {
-    res.render('partials/passwordPrompt', { title: 'Admin' });
+      const { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM } = getAdminDetails();
+    res.render('partials/passwordPrompt', { 
+        title: 'Admin'.
+        adminEmail: BUILDEX_ADMIN_EMAIL,
+        adminPhone: BUILDEX_ADMIN_PHONE,
+        adminInstagram: BUILDEX_ADMIN_INSTAGRAM
+    });
 });
 
 // POST Routes
