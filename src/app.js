@@ -19,7 +19,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // **Trust proxy for Heroku**
-app.set('trust proxy', true); 
+app.set('trust proxy', 1); 
 
 // Views directory
 const viewsDir = path.join(__dirname, 'views');

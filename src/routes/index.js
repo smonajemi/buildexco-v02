@@ -1,10 +1,14 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { contactForm, newsletterSubscription, subscribersData} from '../controllers/homeController.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
 const router = express.Router();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Helper function 
 const getAdminDetails = () => {
@@ -73,6 +77,11 @@ router.get('/admin', (req, res) => {
         adminInstagram: BUILDEX_ADMIN_INSTAGRAM
     });
 });
+
+router.get('/img/logo', (req, res, next) => {
+    const logoImage = path.resolve(__dirname, '../public/img/logo.png'); // Absolute path to the image
+    res.sendFile(logoImage);
+})
 
 // POST Routes
 
