@@ -3,6 +3,8 @@ import axios from 'axios';
 import nodemailer from 'nodemailer';
 import Newsletter from '../models/Newsletter.js';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import { join } from 'path';
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
@@ -74,7 +76,6 @@ export const contactForm = [
   },
 ];
 
-// Newsletter Subscription Route
 export const newsletterSubscription = [
   body('email').isEmail().withMessage('Please provide a valid email address'),
   async (req, res) => {
@@ -113,3 +114,26 @@ export const newsletterSubscription = [
     }
   },
 ];
+
+export const subscribersData = async (req, res) => {
+    try {
+      const subscribers = await Newsletter.find();
+      const currentDate = new Date().toISOString().split('T')[0];
+      const subscribersJson = JSON.stringify(subscribers, null, 2);
+  
+      const mailOptions = {
+        from: process.env.HOST_EMAIL,
+        to: 'sina.monajemi@me.com', // Recipient email
+        subject: `Subscribers List for ${currentDate}`,
+        text: `Here is the list of subscribers as of ${currentDate}: \n\n${subscribersJson}`,
+      };
+  
+      // Send the email
+      await transporter.sendMail(mailOptions);
+  
+      return res.status(200).json({ success: true, message: `Subscribers sent to your email.` });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ success: false, message: 'An error occurred while fetching subscribers.' });
+    }
+  };

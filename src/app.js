@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import createError from 'http-errors';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url'; 
-import expbs from 'express-handlebars'; 
+import expressHandlebars from 'express-handlebars'; 
 import rateLimit from 'express-rate-limit';
 import compression from 'compression';
 import helmet from 'helmet';
@@ -21,8 +21,8 @@ const app = express();
 // Views directory
 const viewsDir = path.join(__dirname, 'views');
 
-// Handlebars engine setup with layouts and partials
-app.engine('.hbs', expbs.engine({
+// Handlebars engine 
+app.engine('.hbs', expressHandlebars.engine({
   extname: '.hbs',
   defaultLayout: 'layout',
   layoutsDir: path.join(viewsDir, 'layout'),
@@ -33,18 +33,18 @@ app.engine('.hbs', expbs.engine({
 app.set('view engine', 'hbs');
 app.set('views', viewsDir);
 
-// Static file serving (public directory) with cache control
+// Static file 
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: '1d',  // Cache static assets for 1 day
+  maxAge: '1d',  
   etag: true,    
 }));
 
 // Middleware setup
 app.use(compression()); //faster response times
 app.use(helmet({
-  contentSecurityPolicy: false,  // Disable CSP in development to allow inline scripts/styles
-  crossOriginEmbedderPolicy: false, // Disable COEP for loading external resources
-  frameguard: { action: 'deny' }, // Prevent clickjacking
+  contentSecurityPolicy: false,  // allow inline scripts/styles
+  crossOriginEmbedderPolicy: false, // loading external resources
+  frameguard: { action: 'deny' }, // clickjacking
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -53,7 +53,7 @@ app.use(cookieParser());
 // Set up rate limiting to prevent abuse
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,  // Limit each IP to 100 requests per window
+  max: 100,  // 100 requests per window
 });
 app.use(limiter);
 

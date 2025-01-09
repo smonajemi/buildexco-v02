@@ -1,6 +1,11 @@
 import express from 'express';
-import { contactForm, newsletterSubscription } from '../controllers/homeController.js';
+import { contactForm, newsletterSubscription, subscribersData } from '../controllers/homeController.js';
 import dotenv from 'dotenv';
+import path from 'path';
+import fs from 'fs';
+import Newsletter from '../models/Newsletter.js'
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 const router = express.Router();
 dotenv.config();
@@ -38,6 +43,18 @@ router.get('/contact', (req, res, next) => {
 });
 
 
+// Ensure the folder exists
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const subscribersDir = join(__dirname, '..', 'subscribers');
+
+const ensureDirectoryExists = (dirPath) => {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+};
+
+router.get('/subscribers', subscribersData);
 // POST
 router.post('/contact', contactForm);
 
