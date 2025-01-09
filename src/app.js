@@ -38,9 +38,9 @@ app.set('views', viewsDir);
 
 
 // Enable request logging
-// if (process.env.NODE_ENV !== 'test') {
-//   app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
-// }
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+}
 // Static file 
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: '1d',  
@@ -48,12 +48,12 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 // **Force HTTPS for secure communication**
-app.use((req, res, next) => {
-  if (req.headers['x-forwarded-proto'] !== 'https' && process.env.NODE_ENV === 'production') {
-    return res.redirect(`https://${req.headers.host}${req.url}`);
-  }
-  next();
-});
+// app.use((req, res, next) => {
+//   if (req.headers['x-forwarded-proto'] !== 'https' && process.env.NODE_ENV === 'production') {
+//     return res.redirect(`https://${req.headers.host}${req.url}`);
+//   }
+//   next();
+// });
 
 
 // Middleware setup
