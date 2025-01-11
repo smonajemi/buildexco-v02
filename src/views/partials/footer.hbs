@@ -59,10 +59,12 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    &copy; <a href="/">Buildex Construction</a>, All Right Reserved.
+                    <p>&copy; <span id="currentYear"></span> <a href="/">Buildex Construction</a>, All Rights Reserved.</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>  document.getElementById('currentYear').textContent = new Date().getFullYear()</script>
 <!-- Footer End -->
