@@ -13,7 +13,6 @@ router.use(attachAdminDetails);
 // Home route
 router.get('/', (req, res) => {
     res.status(200).render('index', { 
-        title: 'Buildex Construction', 
         isHome: true 
     });
 });
@@ -24,7 +23,6 @@ router.get('/projects', (req, res) => {
         imageUrl: `img/prevWorks/p${i + 1}.jpeg`
     }));
     res.status(200).render('partials/projects', {
-        title: 'Buildex Construction',
         services
     });
 });
@@ -32,14 +30,12 @@ router.get('/projects', (req, res) => {
 // Error page route
 router.get('/error', (req, res) => {
     res.status(200).render('error', {
-        title: 'Buildex Construction'
     });
 });
 
 // Contact page route
 router.get('/contact', (req, res) => {
     res.status(200).render('contact', {
-        title: 'Buildex Construction'
     });
 });
 

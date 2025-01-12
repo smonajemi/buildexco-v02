@@ -18,7 +18,9 @@ const config = {
   buildexInstagramUrl: process.env.BUILDEX_INSTAGRAM_URL,
   buildexCalendarUrl: process.env.BUILDEX_CALENDAR_URL,
   buildexGoogleUrl: process.env.BUILDEX_GOOGLE_URL,
+  buildexAPPName: process.env.BUILDEX_APP_NAME,
   adminPassword: process.env.ADMIN_PASSWORD,
+
 
 };
 

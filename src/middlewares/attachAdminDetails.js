@@ -10,6 +10,7 @@ const attachAdminDetails = (req, res, next) => {
         calendarUrl: config.buildexCalendarUrl,
         googleUrl: config.buildexGoogleUrl,
         instagramData: instagramData,
+        title: config.buildexAPPName
     };
     next();
 };
