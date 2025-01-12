@@ -3,28 +3,27 @@
     <div class="container py-5">
         <div class="row g-5">
             <div class="col-lg-3 col-md-6">
-                <h4 class="text-white mb-4 d-flex align-items-center">
-                    {{!-- <img src="img/logo.png" alt="BuildexCo Logo" class="logo me-3"> --}}
-                    Buildex
-                </h4>
-                <p>Buildex offers expert handyman and renovation services in the GTA, backed by 15 years of
-                    experience.</p>
+                <h5 class="text-white mb-4 d-flex align-items-center">
+                    <img src="img/logo.png" alt="BuildexCo Logo" class="logo" style="height: auto; max-width: 15%">
+                    Buildex 
+                </h5>
+                <p>Your one-stop solution for construction and renovation needs across the GTA, dedicated to bringing your vision to life.</p>
                 <div class="d-flex pt-2">
-                    <a class="btn btn-square btn-primary me-1" href="{{adminInstagram}}"><i
-                            class="fab fa-instagram"></i></a>
-
+                    <a class="btn btn-square btn-primary me-1" href="{{calendarUrl}}"><i class="fa fa-book"></i></a>
+                    <a class="btn btn-square btn-primary me-1" href="{{instagramUrl}}"><i class="fab fa-instagram"></i></a>
+                    <a class="btn btn-square btn-primary me-1" href="{{googleUrl}}"><i class="fab fa-google"></i></a>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
                 <h4 class="text-light mb-4">Address</h4>
                 <p><i class="fa fa-map-marker-alt me-3"></i>GTA, Ontario, Canada</p>
                 <p>
-                    <a href="tel:{{adminPhone}}"  style="color: inherit;">
+                    <a href="tel:{{adminPhone}}" style="color: inherit;">
                         <i class="fa fa-phone-alt me-3"></i>{{adminPhone}}
                     </a>
                 </p>
                 <p>
-                    <a href="mailto:{{adminEmail}}"  style="color: inherit;">
+                    <a href="mailto:{{adminEmail}}" style="color: inherit;">
                         <i class="fa fa-envelope me-3"></i>{{adminEmail}}
                     </a>
                 </p>
@@ -35,7 +34,7 @@
                 <a class="btn btn-link" href="/#services">Services</a>
                 <a class="btn btn-link" href="/contact">Contact Us</a>
                 <a class="btn btn-link" href="/projects">Projects</a>
-                <a class="btn btn-link" href="https://calendly.com/buildexguru/30min">Book a Call</a>
+                <a class="btn btn-link" href="{{calendarUrl}}">Schedule a Call</a>
             </div>
             <div class="col-lg-3 col-md-6">
                 <h4 class="text-light mb-4">Newsletter</h4>

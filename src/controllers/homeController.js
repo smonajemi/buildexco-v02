@@ -108,4 +108,9 @@ const subscribersData = [
   },
 ];
 
-export { contactForm, newsletterSubscription, subscribersData };
+const instagramData = [
+  async (req, res) => {
+    res.end('working')
+  }
+]
+export { contactForm, newsletterSubscription, subscribersData, instagramData};

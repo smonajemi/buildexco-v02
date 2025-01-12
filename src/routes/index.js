@@ -1,32 +1,20 @@
 import express from 'express';
-import dotenv from 'dotenv';
-import { contactForm, newsletterSubscription, subscribersData} from '../controllers/homeController.js';
+import { contactForm, newsletterSubscription, subscribersData } from '../controllers/homeController.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
-dotenv.config();
+import attachAdminDetails from '../middlewares/attachAdminDetails.js';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Helper function 
-const getAdminDetails = () => {
-    const { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM } = process.env;
-    return { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM };
-};
-
-// GET Routes
+router.use(attachAdminDetails);
 
 // Home route
 router.get('/', (req, res) => {
-    const { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM } = getAdminDetails();
     res.status(200).render('index', { 
         title: 'Buildex Construction', 
-        isHome: true, 
-        adminEmail: BUILDEX_ADMIN_EMAIL, 
-        adminPhone: BUILDEX_ADMIN_PHONE, 
-        adminInstagram: BUILDEX_ADMIN_INSTAGRAM 
+        isHome: true 
     });
 });
 
@@ -35,53 +23,40 @@ router.get('/projects', (req, res) => {
     const services = Array.from({ length: 29 }, (_, i) => ({
         imageUrl: `img/prevWorks/p${i + 1}.jpeg`
     }));
-    const { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM } = getAdminDetails();
     res.status(200).render('partials/projects', {
         title: 'Buildex Construction',
-        adminEmail: BUILDEX_ADMIN_EMAIL,
-        adminPhone: BUILDEX_ADMIN_PHONE,
-        adminInstagram: BUILDEX_ADMIN_INSTAGRAM,
         services
     });
 });
 
 // Error page route
 router.get('/error', (req, res) => {
-    const { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM } = getAdminDetails();
     res.status(200).render('error', {
-        title: 'Buildex Construction',
-        adminEmail: BUILDEX_ADMIN_EMAIL,
-        adminPhone: BUILDEX_ADMIN_PHONE,
-        adminInstagram: BUILDEX_ADMIN_INSTAGRAM
+        title: 'Buildex Construction'
     });
 });
 
 // Contact page route
 router.get('/contact', (req, res) => {
-    const { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM } = getAdminDetails();
     res.status(200).render('contact', {
-        title: 'Buildex Construction',
-        adminEmail: BUILDEX_ADMIN_EMAIL,
-        adminPhone: BUILDEX_ADMIN_PHONE,
-        adminInstagram: BUILDEX_ADMIN_INSTAGRAM
+        title: 'Buildex Construction'
     });
 });
 
-// Subscribers route (Admin page)
+// Admin page route
 router.get('/admin', (req, res) => {
-      const { BUILDEX_ADMIN_EMAIL, BUILDEX_ADMIN_PHONE, BUILDEX_ADMIN_INSTAGRAM } = getAdminDetails();
     res.render('partials/passwordPrompt', { 
-        title: 'Admin',
-        adminEmail: BUILDEX_ADMIN_EMAIL,
-        adminPhone: BUILDEX_ADMIN_PHONE,
-        adminInstagram: BUILDEX_ADMIN_INSTAGRAM
+        title: 'Admin'
     });
 });
 
+// Logo page route
 router.get('/img/logo', (req, res, next) => {
-    const logoImage = path.resolve(__dirname, '../public/img/logo.png'); // Absolute path to the image
+    const logoImage = path.resolve(__dirname, '../public/img/logo.png'); 
     res.sendFile(logoImage);
-})
+});
+
+
 
 // POST Routes
 
