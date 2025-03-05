@@ -26,10 +26,8 @@ findFreePort(primaryPort, (err, freePort) => {
   if (err) {
     console.error('Error finding a free port:', err);
 
-    // Ask user if they want to try a fallback port
     rl.question('Primary port is busy. Do you want to try a fallback port? (y/n) \n', (answer) => {
       if (answer.toLowerCase() === 'y') {
-        // Proceed to ask for a fallback port
         rl.question(`Please enter the fallback port to try (${fallbackPorts.join(', ')}): `, (newPort) => {
           const port = parseInt(newPort);
           if (!isNaN(port) && fallbackPorts.includes(port)) {
