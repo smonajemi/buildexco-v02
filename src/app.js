@@ -1,7 +1,6 @@
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import expressHandlebars from 'express-handlebars';
 import rateLimit from 'express-rate-limit';
@@ -10,7 +9,7 @@ import helmet from 'helmet';
 import session from 'express-session';
 import indexRoute from './routes/index.js';
 import morgan from 'morgan';
-
+import dotenv from 'dotenv';
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -47,27 +46,18 @@ app.use(express.static(path.join(__dirname, 'public'), {
   etag: true,    
 }));
 
-// **Force HTTPS for secure communication**
-// app.use((req, res, next) => {
-//   if (req.headers['x-forwarded-proto'] !== 'https' && process.env.NODE_ENV === 'production') {
-//     return res.redirect(`https://${req.headers.host}${req.url}`);
-//   }
-//   next();
-// });
-
-
 // Middleware setup
 app.use(compression()); // Faster response times
 app.use(helmet({
-  contentSecurityPolicy: false,  // Allow inline scripts/styles
-  crossOriginEmbedderPolicy: false, // Loading external resources
-  frameguard: { action: 'deny' }, // Clickjacking
+  contentSecurityPolicy: false,  
+  crossOriginEmbedderPolicy: false, 
+  frameguard: { action: 'deny' },
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Set up rate limiting 
+// rate limiting 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100,  // 100 requests 

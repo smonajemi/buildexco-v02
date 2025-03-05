@@ -1,4 +1,6 @@
 import { body, validationResult } from 'express-validator';
+import dotenv from 'dotenv';
+dotenv.config();
 
 
 const validateEmailAndPassword = [

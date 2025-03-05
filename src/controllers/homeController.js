@@ -1,12 +1,11 @@
 import axios from 'axios';
 import Newsletter from '../models/Newsletter.js';
-import dotenv from 'dotenv';
 import { validateContactForm, validateNewsletterSubscription, validateEmailAndPassword } from '../middlewares/validationMiddleware.js';
 import { createEmailTransporter } from '../config/emailConfig.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const transporter = createEmailTransporter();
-
-dotenv.config();
 
 const contactForm = [
   validateContactForm, 
