@@ -37,7 +37,6 @@ const validateEmailAndPassword = [
 const validateContactForm = [
   body('name').notEmpty().withMessage('Name is required'),
   body('email').isEmail().withMessage('Please provide a valid email'),
-  body('phone').notEmpty().withMessage('Phone number is required'),
   body('service').notEmpty().withMessage('Service type is required'),
 
   (req, res, next) => {
