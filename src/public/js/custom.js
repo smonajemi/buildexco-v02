@@ -1,169 +1,146 @@
+document.addEventListener("DOMContentLoaded", function () {
+    /* === NEWSLETTER FORM === */
+    const newsletterForm = document.getElementById("newsletter-form");
+    if (newsletterForm) {
+        newsletterForm.addEventListener("submit", async function (e) {
+            e.preventDefault(); // Prevent default form submission
 
-/* NEWSLETTER */
-document.getElementById('newsletter-form').addEventListener('submit', async function (e) {
-    e.preventDefault(); // Prevent default form submission
+            const emailInput = document.getElementById("newsletter-email");
+            const email = emailInput.value.trim();
+            const successMessage = document.getElementById("newsletter-success");
 
-    const emailInput = document.getElementById('newsletter-email');
-    const email = emailInput.value;
-    const successMessage = document.getElementById('newsletter-success');
+            if (!email) {
+                displayMessage(successMessage, "Please enter a valid email.", "red");
+                return;
+            }
 
-    try {
-        // Send a POST request to the Node.js backend
-        const response = await fetch('/newsletter', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // 'x-api-key': '8e7a2291-4f8c-4f6f-b6d0-fe18bbdb04fc'
-            },
-            body: JSON.stringify({ email }), // Send email in the body
+            try {
+                const response = await fetch("/newsletter", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    displayMessage(successMessage, data.message, "#ecc7d1"); // Show success
+                    emailInput.value = ""; // Clear input
+                } else {
+                    displayMessage(successMessage, data.errors ? data.errors[0].msg : "An error occurred.", "red");
+                }
+            } catch (error) {
+                console.error("Newsletter Error:", error);
+                displayMessage(successMessage, "An error occurred. Please try again later.", "red");
+            }
         });
+    }
 
-        const data = await response.json();
+    /* === CONTACT FORM === */
+    const contactForm = document.getElementById("contact-form");
+    if (contactForm) {
+        contactForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
 
-        if (response.ok) {
-            // If subscription is successful, display success message and clear form
-            successMessage.style.display = 'block';
-            successMessage.textContent = data.message; // "Newsletter subscription successful"
-            successMessage.style.color = '#ecc7d1';
-            emailInput.value = ''; // Clear the email field
-            // Remove the message after 5 seconds
-            setTimeout(() => {
-                successMessage.style.display = 'none';
-            }, 5000);
-        } else {
-            // Display error message if there's an error
-            successMessage.style.display = 'block';
-            successMessage.textContent = data.errors ? data.errors[0].msg : '';
-            successMessage.style.color = '#ecc7d1';
-            successMessage.style.display = 'none';
-            // Remove the message after 5 seconds
-            setTimeout(() => {
-             
-                emailInput.value = ''; // Clear the email field
-            }, 5000);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        successMessage.style.display = 'block';
-        successMessage.textContent = 'An error occurred. Please try again later.';
-        successMessage.style.color = '#ecc7d1';
-        // Remove the message after 5 seconds
+            const nameInput = document.getElementById("name");
+            const emailInput = document.getElementById("email");
+            const phoneInput = document.getElementById("phone");
+            const serviceInput = document.getElementById("service");
+            const messageInput = document.getElementById("message");
+            const submitBtn = document.getElementById("submit-btn");
+            const recaptchaDiv = document.querySelector(".g-recaptcha");
+
+            const recaptchaToken = grecaptcha.getResponse();
+            if (!recaptchaToken) {
+                showRecaptchaError(recaptchaDiv);
+                return;
+            }
+
+            const formData = {
+                name: nameInput.value.trim(),
+                email: emailInput.value.trim(),
+                phone: phoneInput.value.trim(),
+                service: serviceInput.value.trim(),
+                message: messageInput.value.trim(),
+                "g-recaptcha-response": recaptchaToken,
+            };
+
+            if (!validateForm(formData)) return; // Validate required fields
+
+            try {
+                updateButton(submitBtn, "Sending...", true); // Disable button during submission
+
+                const response = await fetch("/contact", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formData),
+                });
+
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    updateButton(submitBtn, "Message Sent", false, "green");
+                    contactForm.reset(); // Clear form
+                    grecaptcha.reset(); // Reset reCAPTCHA
+                } else {
+                    updateButton(submitBtn, "Failed to Send", false, "red");
+                }
+            } catch (error) {
+                console.error("Contact Form Error:", error);
+                updateButton(submitBtn, "Error Sending", false, "red");
+            }
+        });
+    }
+
+    /* === HELPER FUNCTIONS === */
+
+    // Display a message and auto-hide it after 5 seconds
+    function displayMessage(element, text, color) {
+        if (!element) return;
+        element.style.display = "block";
+        element.textContent = text;
+        element.style.color = color;
         setTimeout(() => {
-            successMessage.style.display = 'none';
+            element.style.display = "none";
+        }, 5000);
+    }
+
+    // Show reCAPTCHA error
+    function showRecaptchaError(recaptchaDiv) {
+        if (!recaptchaDiv) return;
+        const existingError = document.getElementById("recaptcha-error");
+        if (!existingError) {
+            const errorMessage = document.createElement("p");
+            errorMessage.id = "recaptcha-error";
+            errorMessage.textContent = "Please complete the reCAPTCHA.";
+            errorMessage.style.color = "red";
+            errorMessage.style.marginTop = "3px";
+            recaptchaDiv.parentNode.appendChild(errorMessage);
+        }
+    }
+
+    // Validate form fields (Ensures required fields are filled)
+    function validateForm(formData) {
+        for (const key in formData) {
+            if (!formData[key]) {
+                alert(`Please fill out the ${key.replace("-", " ")} field.`);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Update the submit button text and state
+    function updateButton(button, text, disable, color = "") {
+        if (!button) return;
+        button.textContent = text;
+        button.disabled = disable;
+        button.style.backgroundColor = color;
+
+        // Reset button after 5 seconds
+        setTimeout(() => {
+            button.textContent = "Get Appointment";
+            button.style.backgroundColor = "";
+            button.disabled = false;
         }, 5000);
     }
 });
-
-
-// CONTACT FORM
-
-document.getElementById('contact-form').addEventListener('submit', async function (e) {
-    e.preventDefault(); // Prevent default form submission
-
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const phoneInput = document.getElementById('phone');
-    const serviceInput = document.getElementById('service');
-    const messageInput = document.getElementById('message');
-    const submitBtn = document.getElementById('submit-btn');
-    const recaptchaDiv = document.querySelector('.g-recaptcha'); // Get reCAPTCHA div
-
-    // Remove existing error message if present
-    const existingError = document.getElementById('recaptcha-error');
-    if (existingError) {
-        existingError.remove();
-    }
-
-    // Get reCAPTCHA token
-    const recaptchaToken = grecaptcha.getResponse();
-
-    if (!recaptchaToken) {
-        // Add a red error message below the reCAPTCHA
-        const errorMessage = document.createElement('p');
-        errorMessage.id = 'recaptcha-error';
-        errorMessage.textContent = 'Please complete the reCAPTCHA.';
-        errorMessage.style.color = 'red';
-        errorMessage.style.marginTop = '3px';
-        recaptchaDiv.parentNode.appendChild(errorMessage); // Append below reCAPTCHA
-        return;
-    }
-
-    // Gather form data
-    const formData = {
-        name: nameInput.value,
-        email: emailInput.value,
-        phone: phoneInput.value,
-        service: serviceInput.value,
-        message: messageInput.value,
-        'g-recaptcha-response': recaptchaToken // Include reCAPTCHA token
-    };
-
-    try {
-        // Change the button text to indicate form submission in progress
-        submitBtn.textContent = 'Sending...';
-        submitBtn.disabled = true; // Disable the button to prevent multiple submissions
-
-        // Send a POST request to the Node.js backend
-        const response = await fetch('/contact', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // 'x-api-key': '8e7a2291-4f8c-4f6f-b6d0-fe18bbdb04fc'
-            },
-            body: JSON.stringify(formData), // Send the form data
-        });
-
-        const data = await response.json();
-
-        // // Debugging: Log response and data
-        // console.log('Response:', response);
-        // console.log('Response Data:', data);
-
-        if (response.ok && data.success) {
-            // On success, change button text to "Message Sent"
-            submitBtn.textContent = 'Message Sent';
-            submitBtn.style.backgroundColor = 'green'; // Optional: Change button color to indicate success
-
-            // Clear the form fields
-            nameInput.value = '';
-            emailInput.value = '';
-            phoneInput.value = '';
-            serviceInput.value = '';
-            messageInput.value = '';
-
-            // Reset reCAPTCHA
-            grecaptcha.reset();
-
-            // Reset button text after 5 seconds
-            setTimeout(() => {
-                submitBtn.textContent = 'Get Appointment';
-                submitBtn.style.backgroundColor = ''; // Reset to original button color
-                submitBtn.disabled = false; // Re-enable the button
-            }, 5000);
-        } else {
-            // On error, change button text to "Failed to Send"
-            submitBtn.textContent = 'Failed to Send';
-            submitBtn.style.backgroundColor = 'red'; // Optional: Change button color to indicate failure
-
-            // Reset button text after 5 seconds
-            setTimeout(() => {
-                submitBtn.textContent = 'Get Appointment';
-                submitBtn.style.backgroundColor = ''; // Reset to original button color
-                submitBtn.disabled = false; // Re-enable the button
-            }, 5000);
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        submitBtn.textContent = 'Error Sending';
-        submitBtn.style.backgroundColor = 'red';
-
-        // Reset button text after 5 seconds
-        setTimeout(() => {
-            submitBtn.textContent = 'Get Appointment';
-            submitBtn.style.backgroundColor = ''; // Reset to original button color
-            submitBtn.disabled = false; // Re-enable the button
-        }, 5000);
-    }
-});
-
-
