@@ -34,7 +34,7 @@ router.get('/projects', (req, res) => {
 
 // Error page route
 router.get('/error', (req, res) => {
-    res.status(200).render('error');
+    res.status(404).render('error');
 });
 
 // Contact page route
