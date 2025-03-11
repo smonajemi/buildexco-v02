@@ -56,3 +56,7 @@
 
     
 })(jQuery);
+
+window.onload = function () {
+    document.getElementById("currentYear").textContent = new Date().getFullYear();
+};
