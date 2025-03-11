@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("currentYear").textContent = new Date().getFullYear();
+
     const newsletterForm = document.getElementById("newsletter-form");
     if (newsletterForm) {
         newsletterForm.addEventListener("submit", async function (e) {
