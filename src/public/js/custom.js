@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    /* === NEWSLETTER FORM === */
     const newsletterForm = document.getElementById("newsletter-form");
     if (newsletterForm) {
         newsletterForm.addEventListener("submit", async function (e) {
@@ -65,10 +64,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 "g-recaptcha-response": recaptchaToken,
             };
 
-            if (!validateForm(formData)) return; // Validate required fields
+            if (!validateForm(formData)) return; 
 
             try {
-                updateButton(submitBtn, "Sending...", true); // Disable button during submission
+                updateButton(submitBtn, "Sending...", true); 
 
                 const response = await fetch("/contact", {
                     method: "POST",
@@ -79,8 +78,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 const data = await response.json();
                 if (response.ok && data.success) {
                     updateButton(submitBtn, "Message Sent", false, "green");
-                    contactForm.reset(); // Clear form
-                    grecaptcha.reset(); // Reset reCAPTCHA
+                    contactForm.reset(); 
+                    grecaptcha.reset(); 
                 } else {
                     updateButton(submitBtn, "Failed to Send", false, "red");
                 }
@@ -91,9 +90,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    /* === HELPER FUNCTIONS === */
-
-    // Display a message and auto-hide it after 5 seconds
     function displayMessage(element, text, color) {
         if (!element) return;
         element.style.display = "block";
@@ -104,7 +100,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 5000);
     }
 
-    // Show reCAPTCHA error
     function showRecaptchaError(recaptchaDiv) {
         if (!recaptchaDiv) return;
         const existingError = document.getElementById("recaptcha-error");
@@ -118,7 +113,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Validate form fields (Ensures required fields are filled)
     function validateForm(formData) {
         for (const key in formData) {
             if (!formData[key]) {
@@ -129,14 +123,12 @@ document.addEventListener("DOMContentLoaded", function () {
         return true;
     }
 
-    // Update the submit button text and state
     function updateButton(button, text, disable, color = "") {
         if (!button) return;
         button.textContent = text;
         button.disabled = disable;
         button.style.backgroundColor = color;
 
-        // Reset button after 5 seconds
         setTimeout(() => {
             button.textContent = "Get Appointment";
             button.style.backgroundColor = "";
