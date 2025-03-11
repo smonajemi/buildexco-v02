@@ -8,7 +8,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Buildex Construction offers expert home renovation, painting, tiling, plumbing, electrical work, eavestrough cleaning, and landscaping services in Durham Region. With 15+ years of experience, we deliver affordable, high-quality home improvements in Ajax, Pickering, Oshawa, Whitby, and surrounding areas. Call us today!">
     <meta name="keywords" content="Buildex Construction, handyman Durham, home renovations Durham, painting, tiling, plumbing, electrical work, eavestrough cleaning, landscaping, flooring, kitchen remodeling, bathroom renovations, Ajax, Pickering, Oshawa, Whitby">
-   
+    
+    <!-- Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self'; 
+        script-src 'self' https://code.jquery.com https://cdn.jsdelivr.net https://lib/wow https://lib/easing https://lib/waypoints https://lib/owlcarousel;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+        img-src 'self' data: https://www.buildexco.com;
+        object-src 'none';
+        upgrade-insecure-requests;
+    " />
+
     <meta property="og:title" content="Buildex Construction - Renovations & Home Services in Durham Region">
     <meta property="og:description" content="Expert home renovations, painting, plumbing, electrical work, eavestrough cleaning, and landscaping in Ajax, Pickering, Oshawa, and Whitby. 15+ years of experience!">
     <meta property="og:image" content="https://www.buildexco.com/img/logo.svg">
@@ -26,7 +36,6 @@
     <link href="lib/animate/animate.min.css" rel="stylesheet">
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
     <link href="css/style.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
     <link rel="canonical" href="https://www.buildexco.com">
@@ -40,10 +49,8 @@
     <main id="main">
         {{{body}}}
     </main>
-
     {{>footer}}
 
-    <!-- JSON-LD Structured Data for Local SEO -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -73,8 +80,14 @@
     }
     </script>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl5+5hb7ie3L0bWl5L4e5z5F5X5a5J5P5k5z5L5M5V5" 
+            crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-pzjw8f+ua7Kw1TIqTfCJLWkj/F3F+2V5SXISvyCeJlG2FHmB7u9puIvh/jULcv65" 
+            crossorigin="anonymous"></script>
+
     <script src="lib/wow/wow.min.js"></script>
     <script src="lib/easing/easing.min.js"></script>
     <script src="lib/waypoints/waypoints.min.js"></script>
