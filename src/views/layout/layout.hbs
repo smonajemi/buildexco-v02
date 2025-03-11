@@ -11,13 +11,14 @@
     
     <!-- Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self'; 
-        script-src 'self' https://code.jquery.com https://cdn.jsdelivr.net https://lib/wow https://lib/easing https://lib/waypoints https://lib/owlcarousel;
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
-        img-src 'self' data: https://www.buildexco.com;
-        object-src 'none';
-        upgrade-insecure-requests;
-    " />
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://code.jquery.com https://cdn.jsdelivr.net https://lib/wow https://lib/easing https://lib/waypoints https://lib/owlcarousel;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net;
+    img-src 'self' data: https://www.buildexco.com https://buildexco.com;
+    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+    object-src 'none';
+    upgrade-insecure-requests;
+">
 
     <meta property="og:title" content="Buildex Construction - Renovations & Home Services in Durham Region">
     <meta property="og:description" content="Expert home renovations, painting, plumbing, electrical work, eavestrough cleaning, and landscaping in Ajax, Pickering, Oshawa, and Whitby. 15+ years of experience!">
