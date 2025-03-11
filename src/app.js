@@ -10,6 +10,8 @@ import session from 'express-session';
 import indexRoute from './routes/index.js';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import { cspMiddleware, cspReportMiddleware } from './middlewares/cspMiddleware.js';
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,7 +20,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // **Trust proxy for Heroku**
-app.set('trust proxy', 1); 
+app.set('trust proxy', 1);
 
 // Views directory
 const viewsDir = path.join(__dirname, 'views');
@@ -31,15 +33,15 @@ app.engine('.hbs', expressHandlebars.engine({
   partialsDir: path.join(viewsDir, 'partials'),
 }));
 
-// Set view engine and views directory
+// view engine and views directory
 app.set('view engine', 'hbs');
 app.set('views', viewsDir);
-
 
 // Enable request logging
 if (process.env.NODE_ENV !== 'test') {
   app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 }
+
 // Static file 
 app.use(express.static(path.join(__dirname, 'public'), {
   maxAge: '1d',  
@@ -47,7 +49,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 // Middleware setup
-app.use(compression()); // Faster response times
+app.use(compression()); 
 app.use(helmet({
   contentSecurityPolicy: false,  
   crossOriginEmbedderPolicy: false, 
@@ -57,12 +59,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// rate limiting 
+// CSP Middleware
+app.use(cspMiddleware);
+
+// CSP Violation Reporting Endpoint
+app.post("/csp-violation-report", cspReportMiddleware);
+
+// Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100,  // 100 requests 
 });
-
 app.use(limiter);
 
 // Session management
