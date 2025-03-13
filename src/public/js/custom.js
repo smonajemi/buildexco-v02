@@ -1,10 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const script = document.createElement("script");
-    script.src = "https://www.google.com/recaptcha/api.js";
-    script.async = false;
-    script.defer = true;
-    document.head.appendChild(script);
-
     document.getElementById("currentYear").textContent = new Date().getFullYear();
     
     const newsletterForm = document.getElementById("newsletter-form");
