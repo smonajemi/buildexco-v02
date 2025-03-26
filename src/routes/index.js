@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import attachAdminDetails from '../middlewares/attachAdminDetails.js';
 import sanitizeHtml from 'sanitize-html';
+import axios from 'axios';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
@@ -58,5 +59,41 @@ router.get('/img/logo', (req, res, next) => {
 router.post('/contact', contactForm);
 router.post('/newsletter', newsletterSubscription);
 router.post('/send-subscribers', subscribersData);
+router.post('/chat', async (req, res) => {
+    try {
+      const { chatPrompt } = req.body;
+  
+      const response = await axios.post(process.env.OPENAI_API_URL, {
+        model: 'gpt-3.5-turbo',
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are an AI assistant for BuildExCo. Only answer questions about renovations, construction, or painting in Ontario, Canada. Respond clearly and professionally. Do not answer questions unrelated to the company or services listed at www.buildexco.com.',
+          },
+          {
+            role: 'user',
+            content: chatPrompt,
+          },
+        ],
+        max_tokens: 300,
+        temperature: 0.7,
+      }, {
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      const result = response.data.choices[0].message.content.trim();
+      res.json({ result });
+  
+    } catch (err) {
+      console.error('OpenAI API Error:', err.response?.data || err.message);
+      res.status(500).json({ error: err.message });
+    }
+  });
+  
+  
 
 export default router;
