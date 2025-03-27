@@ -8,7 +8,7 @@ dotenv.config();
 const transporter = createEmailTransporter();
 
 const contactForm = [
-  validateContactForm, 
+  validateContactForm,
 
   async (req, res) => {
     const { name, email, phone, service, message, 'g-recaptcha-response': recaptchaToken } = req.body;
@@ -54,7 +54,7 @@ const contactForm = [
 ];
 
 const newsletterSubscription = [
-  validateNewsletterSubscription, 
+  validateNewsletterSubscription,
 
   async (req, res) => {
     const { email } = req.body;
@@ -75,7 +75,7 @@ const newsletterSubscription = [
 ];
 
 const subscribersData = [
-  validateEmailAndPassword, 
+  validateEmailAndPassword,
 
   async (req, res) => {
     try {
@@ -89,7 +89,7 @@ const subscribersData = [
         content: subscribersJson,
         encoding: 'utf-8',
       };
-    
+
       const mailOptions = {
         from: process.env.HOST_EMAIL,
         to: req.body.recipientEmail,
@@ -97,7 +97,7 @@ const subscribersData = [
         text: `Here is the list of subscribers as of ${currentDate}:`,
         attachments: [jsonAttachment],
       };
-    
+
       await transporter.sendMail(mailOptions);
       return res.status(200).json({ success: true, message: `Subscribers sent to your email.` });
     } catch (error) {
@@ -112,4 +112,4 @@ const instagramData = [
     res.end('working')
   }
 ]
-export { contactForm, newsletterSubscription, subscribersData, instagramData};
+export { contactForm, newsletterSubscription, subscribersData, instagramData };
