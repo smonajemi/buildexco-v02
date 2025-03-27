@@ -131,19 +131,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 body: JSON.stringify({ chatPrompt: userMessage })
             })
-            .then(response => response.json())
-            .then(data => {
-                const aiMsgElement = document.createElement("div");
-                aiMsgElement.innerHTML = `<strong>Assistant:</strong> ${data.result}`;
-                chatMessages.appendChild(aiMsgElement);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            })
-            .catch(err => {
-                console.error('Error:', err);
-                const errorMsg = document.createElement("div");
-                errorMsg.innerHTML = `<strong>Error:</strong> Could not get a reply.`;
-                chatMessages.appendChild(errorMsg);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    const aiMsgElement = document.createElement("div");
+                    aiMsgElement.innerHTML = `<strong>Assistant:</strong> ${data.result}`;
+                    chatMessages.appendChild(aiMsgElement);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    const errorMsg = document.createElement("div");
+                    errorMsg.innerHTML = `<strong>Error:</strong> Could not get a reply.`;
+                    chatMessages.appendChild(errorMsg);
+                });
         });
     }
 
