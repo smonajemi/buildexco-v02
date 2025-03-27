@@ -53,7 +53,11 @@ app.use(helmet({
       "frame-src": ["'self'", "https://www.google.com", "https://www.recaptcha.net"],
       "object-src": ["'none'"],
       "upgrade-insecure-requests": [],
-      "report-uri": ["/csp-violation-report"]
+      "report-uri": ["/csp-violation-report"],
+      "base-uri": ["'self'"],
+      "form-action": ["'self'"],
+      "frame-ancestors": ["'self'"],
+      "script-src-attr": ["'none'"]
     }
   },
   frameguard: { action: 'deny' },
