@@ -97,7 +97,7 @@ app.engine('.hbs', expressHandlebars.engine({
 app.set('view engine', 'hbs');
 app.set('views', viewsDir);
 
-// 🛣️ Routes
+// Routes
 app.use('/', indexRoute);
 
 // 404 Handler
