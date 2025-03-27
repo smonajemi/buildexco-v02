@@ -1,5 +1,9 @@
-<a class="btn btn-lg btn-primary btn-lg-square chat-box" data-bs-toggle="modal" data-bs-target="#chatModal"><i class="bi bi-chat"></i></a>
+<!-- Trigger button -->
+<a class="btn btn-lg btn-primary btn-lg-square chat-box" data-bs-toggle="modal" data-bs-target="#chatModal">
+  <i class="bi bi-chat"></i>
+</a>
 
+<!-- Modal -->
 <div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
@@ -7,11 +11,13 @@
         <h6 class="modal-title" id="chatModalLabel">Virtual Renovation Assistant</h6>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      
+
       <div class="modal-body">
-        <div id="chatMessages" style="height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px; margin-bottom: 10px;"></div>
-        
-        <form id="chatForm">
+        <div id="chatMessages"
+             style="height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+        </div>
+
+        <form action="/chat" method="POST" id="chatForm">
           <div class="input-group">
             <input type="text" class="form-control" id="chatInput" placeholder="Ask about renovations..." required>
             <button class="btn btn-primary" type="submit">Send</button>
@@ -21,3 +27,6 @@
     </div>
   </div>
 </div>
+
+
+  

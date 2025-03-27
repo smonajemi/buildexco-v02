@@ -1,11 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("currentYear").textContent = new Date().getFullYear();
-    
+    // SET CURRENT YEAR
+    const yearEl = document.getElementById("currentYear");
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    // NEWSLETTER FORM 
     const newsletterForm = document.getElementById("newsletter-form");
     if (newsletterForm) {
         newsletterForm.addEventListener("submit", async function (e) {
-            e.preventDefault(); // Prevent default form submission
-
+            e.preventDefault();
             const emailInput = document.getElementById("newsletter-email");
             const email = emailInput.value.trim();
             const successMessage = document.getElementById("newsletter-success");
@@ -25,8 +27,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 const data = await response.json();
 
                 if (response.ok) {
-                    displayMessage(successMessage, data.message, "#ecc7d1"); // Show success
-                    emailInput.value = ""; // Clear input
+                    displayMessage(successMessage, data.message, "#ecc7d1");
+                    emailInput.value = "";
                 } else {
                     displayMessage(successMessage, data.errors ? data.errors[0].msg : "An error occurred.", "red");
                 }
@@ -37,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    /* === CONTACT FORM === */
+    // CONTACT FORM
     const contactForm = document.getElementById("contact-form");
     if (contactForm) {
         contactForm.addEventListener("submit", async function (e) {
@@ -66,10 +68,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 "g-recaptcha-response": recaptchaToken,
             };
 
-            if (!validateForm(formData)) return; 
+            if (!validateForm(formData)) return;
 
             try {
-                updateButton(submitBtn, "Sending...", true); 
+                updateButton(submitBtn, "Sending...", true);
 
                 const response = await fetch("/contact", {
                     method: "POST",
@@ -80,8 +82,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 const data = await response.json();
                 if (response.ok && data.success) {
                     updateButton(submitBtn, "Message Sent", false, "green");
-                    contactForm.reset(); 
-                    grecaptcha.reset(); 
+                    contactForm.reset();
+                    grecaptcha.reset();
                 } else {
                     updateButton(submitBtn, "Failed to Send", false, "red");
                 }
@@ -92,6 +94,60 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // CHAT MODAL
+    const chatForm = document.getElementById("chatForm");
+    const chatInput = document.getElementById("chatInput");
+    const chatMessages = document.getElementById("chatMessages");
+    const chatModal = document.getElementById('chatModal');
+
+    if (chatModal) {
+        chatModal.addEventListener('shown.bs.modal', function () {
+            chatMessages.innerHTML = '';
+            const welcomeMsg = document.createElement("div");
+            welcomeMsg.innerHTML = `<strong>Assistant:</strong> Hello! How can I help you with your renovation today?`;
+            chatMessages.appendChild(welcomeMsg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
+    }
+
+    if (chatForm) {
+        chatForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const userMessage = chatInput.value.trim();
+            if (!userMessage) return;
+
+            const userMsgElement = document.createElement("div");
+            userMsgElement.innerHTML = `<strong>You:</strong> ${userMessage}`;
+            chatMessages.appendChild(userMsgElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            chatInput.value = "";
+
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ chatPrompt: userMessage })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const aiMsgElement = document.createElement("div");
+                aiMsgElement.innerHTML = `<strong>Assistant:</strong> ${data.result}`;
+                chatMessages.appendChild(aiMsgElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                const errorMsg = document.createElement("div");
+                errorMsg.innerHTML = `<strong>Error:</strong> Could not get a reply.`;
+                chatMessages.appendChild(errorMsg);
+            });
+        });
+    }
+
+    // HELPER FUNCTIONS 
     function displayMessage(element, text, color) {
         if (!element) return;
         element.style.display = "block";
@@ -138,7 +194,3 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 5000);
     }
 });
-
-
-
-
