@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     displayMessage(successMessage, data.message, "#ecc7d1");
                     emailInput.value = "";
                 } else {
-                    displayMessage(successMessage, data.errors ? data.errors[0].msg : "An error occurred.", "red");
+                    displayMessage(successMessage, data.message || "Something went wrong.", "red");
                 }
             } catch (error) {
                 console.error("Newsletter Error:", error);
