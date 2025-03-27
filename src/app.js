@@ -10,71 +10,74 @@ import session from 'express-session';
 import indexRoute from './routes/index.js';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import { cspMiddleware, cspReportMiddleware } from './middlewares/cspMiddleware.js';
+import { cspReportMiddleware } from './middlewares/cspMiddleware.js';
+import { httpsRedirect } from './middlewares/httpsRedirect.js'
+import errorHandler, { AppError } from './middlewares/errorHandler.js';
 
+// Environment Variables
 dotenv.config();
 
+// Directory Setup
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// App Initialization
 const app = express();
 
-// **Trust proxy for Heroku**
-app.set('trust proxy', 1);
+// Proxy & Redirects
+app.set('trust proxy', 1); // e.g., for Heroku
+app.use(httpsRedirect);
 
-// Views directory
-const viewsDir = path.join(__dirname, 'views');
-
-// Handlebars engine 
-app.engine('.hbs', expressHandlebars.engine({
-  extname: '.hbs',
-  defaultLayout: 'layout',
-  layoutsDir: path.join(viewsDir, 'layout'),
-  partialsDir: path.join(viewsDir, 'partials'),
-}));
-
-// view engine and views directory
-app.set('view engine', 'hbs');
-app.set('views', viewsDir);
-
-// Enable request logging
-if (process.env.NODE_ENV !== 'test') {
-  app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
-}
-
-// Static file 
+// Static Files (before compression for caching benefit)
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: '1d',  
-  etag: true,    
+  maxAge: '1d',
+  etag: true,
 }));
 
-// Middleware setup
-app.use(compression()); 
-app.use(helmet({
-  contentSecurityPolicy: false,  
-  crossOriginEmbedderPolicy: false, 
-  frameguard: { action: 'deny' },
-}));
+// Middleware: Request Parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// CSP Middleware
-app.use(cspMiddleware);
+// Security Headers & Compression
+app.use(compression());
+app.use(helmet({
+  contentSecurityPolicy: {
+    useDefaults: true,
+    directives: {
+      "default-src": ["'self'"],
+      "script-src": ["'self'", "https://code.jquery.com", "https://cdn.jsdelivr.net", "https://www.google.com", "https://www.gstatic.com"],
+      "style-src": ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://use.fontawesome.com"],
+      "font-src": ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://use.fontawesome.com", "data:"],
+      "img-src": ["'self'", "data:", "https://www.buildexco.com"],
+      "frame-src": ["'self'", "https://www.google.com", "https://www.recaptcha.net"],
+      "object-src": ["'none'"],
+      "upgrade-insecure-requests": [],
+      "report-uri": ["/csp-violation-report"]
+    }
+  },
+  frameguard: { action: 'deny' },
+  crossOriginEmbedderPolicy: false,
+}));
 
-// CSP Violation Reporting Endpoint
+// CSP Violation Reports
 app.post("/csp-violation-report", cspReportMiddleware);
 
-// Rate limiting
+// Logger (after security)
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+}
+
+// Rate Limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,  // 100 requests 
+  windowMs: 15 * 60 * 1000,
+  max: 100,
 });
 app.use(limiter);
 
-// Session management
+// Session Handling
 app.use(session({
-  secret: process.env.SESSION_SECRET,  
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -83,28 +86,26 @@ app.use(session({
   },
 }));
 
-// Routes
+// View Engine Setup
+const viewsDir = path.join(__dirname, 'views');
+app.engine('.hbs', expressHandlebars.engine({
+  extname: '.hbs',
+  defaultLayout: 'layout',
+  layoutsDir: path.join(viewsDir, 'layout'),
+  partialsDir: path.join(viewsDir, 'partials'),
+}));
+app.set('view engine', 'hbs');
+app.set('views', viewsDir);
+
+// 🛣️ Routes
 app.use('/', indexRoute);
 
-// Error 404
+// 404 Handler
 app.use((req, res, next) => {
-  res.status(404).render('error', { 
-    title: 'Page Not Found', 
-    message: 'Sorry, the page you are looking for does not exist.' 
-  });
+  next(new AppError('Page Not Found', 404));
 });
 
-// General error
-app.use((err, req, res, next) => {
-  res.status(err.status || 500).render('error', { 
-    title: 'Error', 
-    message: err.message || 'Internal Server Error' 
-  });
-});
+app.use(errorHandler);
 
-// Catch-all error 
-app.use((err, req, res, next) => {
-  res.status(err.status || 500).send(err.message || 'Internal Server Error');
-});
 
 export default app;
